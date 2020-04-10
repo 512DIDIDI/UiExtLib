@@ -14,7 +14,7 @@ Step 1. Add the JitPack repository to your build file
         maven { url 'https://jitpack.io' }
       }
     }
-Step 2. Add the dependency ( *uiExtLibVersion = 1.0.0* ) 
+Step 2. Add the dependency ( *uiExtLibVersion = JetPackVersion* ) 
 
     dependencies {
       implementation "com.github.512DIDIDI:UiExtLib:$uiExtLibVersion"
