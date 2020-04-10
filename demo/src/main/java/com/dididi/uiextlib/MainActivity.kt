@@ -2,6 +2,7 @@ package com.dididi.uiextlib
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.dididi.uiextlib.ext.showLoading
 
 class MainActivity : AppCompatActivity() {
 
