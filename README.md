@@ -1,4 +1,7 @@
 # UiExtLib
+
+[![](https://jitpack.io/v/512DIDIDI/UiExtLib.svg)](https://jitpack.io/#512DIDIDI/UiExtLib)
+
 ui lib & ext lib 
 
 kotlin lib
