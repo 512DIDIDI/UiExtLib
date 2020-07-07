@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.airbnb.lottie.BuildConfig
+import com.dididi.uiextlib.BuildConfig
 
 
 /**
@@ -13,7 +13,6 @@ import com.airbnb.lottie.BuildConfig
  * @describe 日志工具类
  */
 
-private const val TAG = "PackRat"
 //最长日志行数
 private const val LOG_MAX_LENGTH = 2000
 private var debug = BuildConfig.DEBUG
@@ -24,7 +23,7 @@ fun Context.toast(value: String?) {
 
 fun Fragment.toast(value: CharSequence?) = this.activity!!.toast(value.toString())
 
-fun log(tag:String = TAG,content: String) {
+fun Any.log(content: String, tag: String = this.javaClass.simpleName) {
     if (debug) {
         //增加log日志的长度
         val strLength = content.length
