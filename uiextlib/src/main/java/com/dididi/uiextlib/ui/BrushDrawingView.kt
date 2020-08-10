@@ -24,6 +24,8 @@ class BrushDrawingView : View {
 
     /**绘制模式*/
     enum class PaintMode {
+        /**未处在绘制模式中*/
+        NONE,
         /**绘画模式*/
         PAINT,
         /**橡皮擦模式*/
@@ -63,40 +65,53 @@ class BrushDrawingView : View {
         resetPaint()
     }
 
-    internal var brushDrawingListener:OnBrushDrawingListener? = null
+    var brushDrawingListener: OnBrushDrawingListener? = null
+
     /**绘制画笔的颜色*/
-    internal var paintColor = Color.BLACK
+    var paintColor = Color.BLACK
         set(value) {
             field = value
             mPaint.color = value
         }
 
     /**画笔粗细*/
-    internal var paintWidth = 20f
+    var paintWidth = 20f
         set(value) {
             field = value
             mPaint.strokeWidth = value
         }
 
     /**画笔透明度*/
-    internal var paintOpacity = 255
+    var paintOpacity = 255
         set(value) {
             field = value
             mPaint.alpha = value
         }
 
-    /**是否是绘制模式*/
-    internal var paintMode = false
+    /**绘制模式选择 [PaintMode]*/
+    var paintMode: PaintMode = PaintMode.NONE
+        set(value) {
+            visibility = VISIBLE
+            when(value){
+                PaintMode.PAINT -> isPaint = true
+                PaintMode.ERASER -> isEraser = true
+                PaintMode.NONE -> isEraser = false
+            }
+            field = value
+        }
+
+    /**是否是绘制*/
+    private var isPaint = false
         set(value) {
             field = value
             mPaint.xfermode = if (value) paintXfermode else null
         }
 
     /**是否是橡皮擦模式*/
-    internal var eraserMode = false
+    private var isEraser = false
         set(value) {
             field = value
-            paintMode = value
+            isPaint = value
             mPaint.xfermode = if (value) eraserXfermode else null
         }
 
@@ -127,7 +142,7 @@ class BrushDrawingView : View {
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         //如果处于painting模式，则直接拦截触摸事件
-        if (paintMode) {
+        if (isPaint) {
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
                     //获取起点
@@ -153,8 +168,8 @@ class BrushDrawingView : View {
         super.onDetachedFromWindow()
         mDrawnPaths.clear()
         mRedoPaths.clear()
-        paintMode = false
-        eraserMode = false
+        isPaint = false
+        isEraser = false
     }
 
     /**
@@ -214,7 +229,7 @@ class BrushDrawingView : View {
     /**
      * 清除画布
      */
-    internal fun clearAll() {
+    fun clearAll() {
         mDrawnPaths.clear()
         mRedoPaths.clear()
         invalidate()
@@ -224,7 +239,7 @@ class BrushDrawingView : View {
      * 撤销上一步画笔
      * @return 撤销成功返回true，否则false
      */
-    internal fun undo(): Boolean {
+    fun undo(): Boolean {
         brushDrawingListener?.removeView(this)
         return if (mDrawnPaths.isNotEmpty()) {
             mRedoPaths.push(mDrawnPaths.pop())
@@ -238,7 +253,7 @@ class BrushDrawingView : View {
     /**
      * redo撤销的历史记录
      */
-    internal fun redo(): Boolean {
+    fun redo(): Boolean {
         brushDrawingListener?.addView(this)
         return if (mRedoPaths.isNotEmpty()) {
             mDrawnPaths.push(mRedoPaths.pop())

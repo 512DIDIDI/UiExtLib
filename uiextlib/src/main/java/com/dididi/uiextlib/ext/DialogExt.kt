@@ -6,7 +6,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupMenu
+import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
+import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
 import com.dididi.uiextlib.R
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -25,19 +27,33 @@ private val popupMenus = arrayListOf<PopupMenu>()
 
 /**
  * loading框显示
+ * @param resId 支持lottie 可参考[R.layout.dialog_loading]来实现
+ * @param themeResId dialog样式
  */
-fun Context.showLoading() = Dialog(this, R.style.custom_dialog).apply {
-    val view = LayoutInflater
-        .from(this@showLoading)
-        .inflate(R.layout.dialog_loading, null, false)
-    setContentView(view)
-    setCanceledOnTouchOutside(false)
-    setCancelable(true)
-    dialogs.add(this)
-    show()
-}
+fun Context.showLoading(
+    @LayoutRes resId: Int = R.layout.dialog_loading,
+    @StyleRes themeResId:Int = R.style.custom_dialog,
+    isCancelable:Boolean = true,
+    isCanceledOnTouchOutside:Boolean = false
+) =
+    Dialog(this, themeResId).apply {
+        val view = LayoutInflater
+            .from(this@showLoading)
+            .inflate(resId, null, false)
+        setContentView(view)
+        setCanceledOnTouchOutside(isCanceledOnTouchOutside)
+        setCancelable(isCancelable)
+        dialogs.add(this)
+        show()
+    }
 
-fun Fragment.showLoading() = this.activity!!.showLoading()
+fun Fragment.showLoading(
+    @LayoutRes resId: Int = R.layout.dialog_loading,
+    @StyleRes themeResId:Int = R.style.custom_dialog,
+    isCancelable:Boolean = true,
+    isCanceledOnTouchOutside:Boolean = false
+) =
+    this.activity!!.showLoading(resId,themeResId,isCancelable,isCanceledOnTouchOutside)
 
 /**
  * 关闭所有弹出框
@@ -65,6 +81,9 @@ fun dismissAllPopupMenu() = popupMenus.forEach {
     it.dismiss()
 }
 
+/**
+ * snackBar
+ */
 fun Activity.showSnackBar(message: String) {
     val view = findViewById<View>(android.R.id.content)
     Snackbar.make(view, message, BaseTransientBottomBar.LENGTH_SHORT).show()
