@@ -2,7 +2,6 @@ package com.dididi.uiextlib.ext
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
-import android.animation.TimeInterpolator
 import android.content.Context
 import android.view.View
 import android.view.animation.OvershootInterpolator
@@ -67,10 +66,10 @@ fun View.setTranslationAnimation(
     translation: Translation,
     start: Float,
     distance: Float,
-    delay: Long = 0,
     duration: Long,
+    delay: Long = 0,
     isOvershoot: Boolean = true,
-    strength:Float = 1.5f
+    strength: Float = 1.5f
 ): Unit = getObjectAnimator(this, translation.value, start, distance, delay, duration).apply {
     if (isOvershoot) {
         interpolator = OvershootInterpolator(strength)
@@ -82,7 +81,7 @@ fun View.setTranslationAnimation(
  * @param isEnable 决定控件alpha为0时是否仍有效
  */
 fun View.setAlphaAnimation(
-    start: Float, end: Float, delay: Long = 0, duration: Long, isEnable: Boolean
+    start: Float, end: Float, duration: Long, isEnable: Boolean, delay: Long = 0
 ): Unit = getObjectAnimator(this, "alpha", start, end, delay, duration).apply {
     addListener(object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {
@@ -116,10 +115,10 @@ fun View.setRotateAnimation(
     rotation: Rotation,
     start: Float,
     end: Float,
-    delay: Long = 0,
     duration: Long,
+    delay: Long = 0,
     isOvershoot: Boolean = true,
-    strength:Float = 1.5f
+    strength: Float = 1.5f
 ): Unit = getObjectAnimator(this, rotation.value, start, end, delay, duration).apply {
     if (isOvershoot) {
         interpolator = OvershootInterpolator(strength)
@@ -133,19 +132,19 @@ fun View.setRotateAnimation(
  * @param behindView 需要显示的view
  */
 fun Context.setFlipAnimation(
-    rotation: Rotation = Rotation.RotationY,
     backgroundView: View?,
     frontView: View,
-    behindView: View
+    behindView: View,
+    rotation: Rotation = Rotation.RotationY
 ) {
     setCameraDistance(backgroundView, frontView, behindView)
     //当前显示与背景旋转180并隐藏
-    frontView.setAlphaAnimation(1f, 0f, 0, 500, false)
-    backgroundView?.setRotateAnimation(rotation, 0f, 180f, 0, 1000, false)
-    frontView.setRotateAnimation(rotation, 0f, 180f, 0, 1000, false)
+    frontView.setAlphaAnimation(1f, 0f,  500, false,0)
+    backgroundView?.setRotateAnimation(rotation, 0f, 180f, 1000, 0, false)
+    frontView.setRotateAnimation(rotation, 0f, 180f, 1000, 0, false)
     //需要显示的view 旋转-180度并显示
-    behindView.setRotateAnimation(rotation, 0f, -180f, 0, 1000, false)
-    behindView.setAlphaAnimation(0f, 1f, 500, 500, true)
+    behindView.setRotateAnimation(rotation, 0f, -180f, 1000, 0, false)
+    behindView.setAlphaAnimation(0f, 1f, 500, true, 500)
 }
 
 /**
@@ -163,14 +162,14 @@ fun Context.setFlipAnimation(
 fun setMoveDelayAnimation(
     translation: Translation,
     startPos: Float,
-    endPos: Float = 0f,
     startAlpha: Float,
     endAlpha: Float,
     isEnable: Boolean,
-    strength: Float = 1.5f,
     firstDelay: Long,
     eachDelay: Long,
     eachDuration: Long,
+    endPos: Float = 0f,
+    strength: Float = 1.5f,
     vararg views: View
 ) {
     //获取位移结束位置
@@ -190,12 +189,12 @@ fun setMoveDelayAnimation(
             translation,
             startPos,
             getEndPos(this),
-            firstDelay,
             eachDuration,
+            firstDelay,
             true,
             strength
         )
-        setAlphaAnimation(startAlpha, endAlpha, firstDelay, eachDuration, isEnable)
+        setAlphaAnimation(startAlpha, endAlpha, eachDuration, isEnable, firstDelay)
     }
     //剩余控件的动画
     for (i in 1 until views.size) {
@@ -204,12 +203,12 @@ fun setMoveDelayAnimation(
             translation,
             startPos,
             getEndPos(views[i]),
-            delay,
             eachDuration,
+            delay,
             true,
             strength
         )
-        views[i].setAlphaAnimation(startAlpha, endAlpha, delay, eachDuration, isEnable)
+        views[i].setAlphaAnimation(startAlpha, endAlpha, eachDuration, isEnable, delay)
     }
 }
 

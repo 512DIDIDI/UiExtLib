@@ -1,5 +1,6 @@
 package com.dididi.uiextlib.ext
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +9,8 @@ import android.widget.PopupMenu
 import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
 import com.dididi.uiextlib.R
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 
 
 /**
@@ -61,3 +64,14 @@ fun Fragment.showPopupMenu(parentView: View, @MenuRes menuRes: Int) =
 fun dismissAllPopupMenu() = popupMenus.forEach {
     it.dismiss()
 }
+
+fun Activity.showSnackBar(message: String) {
+    val view = findViewById<View>(android.R.id.content)
+    Snackbar.make(view, message, BaseTransientBottomBar.LENGTH_SHORT).show()
+}
+
+fun Fragment.showSnackBar(message: String) {
+    val view = this.activity!!.findViewById<View>(android.R.id.content)
+    Snackbar.make(view, message, BaseTransientBottomBar.LENGTH_SHORT).show()
+}
+
